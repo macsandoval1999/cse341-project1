@@ -19,7 +19,7 @@ database.initDB = (callback) => {
         console.log('Database is already initialized!');
         return callback(null, dbClient);
     }
-    MongoClient.connect(process.env.MONGODB_URL)
+    MongoClient.connect(process.env.MONGODB_URI)
         .then(client => {
             dbClient = client;
             callback(null, dbClient);
@@ -71,7 +71,7 @@ database.initDB = (callback) => {
         console.log('Database is already initialized!');
         return callback(null, dbClient);
     }
-    MongoClient.connect(process.env.MONGODB_URL)
+    MongoClient.connect(process.env.MONGODB_URI)
         .then(client => {
             dbClient = client;
             callback(null, dbClient);
@@ -89,7 +89,7 @@ database.getDB = () => {
 ____________________________________________________
 The database object has two methods. 
 Heres a breakdown of both methods:
-    - initDB(callback): This method initializes the database connection. It first checks if the database has already been initialized, and if so, it logs a message and returns the existing database instance via the callback. If the database is not initialized, it uses MongoClient.connect() to connect to the MongoDB server using the connection string from the environment variable MONGODB_URL. If the connection is successful, it stores the client instance in the dbClient variable and calls the callback with the client. If there is an error during connection, it calls the callback with the error.
+    - initDB(callback): This method initializes the database connection. It first checks if the database has already been initialized, and if so, it logs a message and returns the existing database instance via the callback. If the database is not initialized, it uses MongoClient.connect() to connect to the MongoDB server using the connection string from the environment variable MONGODB_URI. If the connection is successful, it stores the client instance in the dbClient variable and calls the callback with the client. If there is an error during connection, it calls the callback with the error.
     - getDB(): This method returns the database client instance. If the database has not been initialized yet, it throws an error. This method can be used in other parts of the application to access the database client after it has been initialized.
 
 

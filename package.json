@@ -4,7 +4,7 @@
   "description": "CSE341 Project 1 for Weeks 1 & 2",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

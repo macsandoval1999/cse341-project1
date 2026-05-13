@@ -9,7 +9,6 @@ const mongodb = require('./data/database.js');
 // 2. Load environment variables & Initialize Express App
 dotenv.config();
 const port = process.env.PORT || 3000;
-const host = process.env.HOST || 'localhost';
 const app = express();
 
 
@@ -26,8 +25,8 @@ mongodb.database.initDB((err) => {
         process.exit(1);
     }
     else {
-        app.listen(port, host, () => {
-            console.log(`Server is running at http://${host}:${port}`);
+        app.listen(port, () => {
+            console.log(`Server is running on port ${port}`);
         });
     }
 });
@@ -75,11 +74,11 @@ mongodb.database.initDB((err) => {
         process.exit(1);
     }
     else {
-        app.listen(port, host, () => {
-            console.log(`Server is running at http://${host}:${port}`);
+        app.listen(port, () => {
+            console.log(`Server is running on port ${port}`);
         });
     }
 });
 ____________________________________________________
-Finally, we start the server. However, before we can start listening for requests, we need to ensure that our database connection is initialized. We call the initDB function from our mongodb module, which takes a callback function as an argument. If there is an error initializing the database, we log the error and exit the process. If the database initializes successfully, we start the server by calling app.listen() with the specified port and host, and log a message indicating that the server is running.
+Finally, we start the server. However, before we can start listening for requests, we need to ensure that our database connection is initialized. We call the initDB function from our mongodb module, which takes a callback function that will be called once the database connection is established. If there is an error during initialization, we log the error and exit the process. If the initialization is successful, we start the server by calling app.listen() and passing in the port number. We also log a message to indicate that the server is running.
 */
