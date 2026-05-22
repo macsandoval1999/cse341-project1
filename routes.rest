@@ -1,0 +1,140 @@
+### Variables for testing
+@baseUrl = http://localhost:3000
+@contactId = 6a0e8f8a8a8ec295a6e95ecb
+@secondContactId = 64f1234567890abc12345679
+
+
+
+### [/] - greeting
+GET {{baseUrl}}/
+
+
+
+### [/contacts] - Get all contacts
+GET {{baseUrl}}/contacts
+
+
+
+### [/contacts/{{contactId}}] - Get one contact by ID
+GET {{baseUrl}}/contacts/{{contactId}}
+
+
+
+### [/contacts] - Create one contact
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+
+{
+	"firstName": "Ada",
+	"lastName": "Lovelace",
+	"email": "ada.lovelace@example.com",
+	"favoriteColor": "Blue",
+	"birthday": "1815-12-10"
+}
+
+
+
+### [/contacts/bulk] - Create multiple contacts
+POST {{baseUrl}}/contacts/bulk
+Content-Type: application/json
+
+[
+	{
+		"firstName": "Grace",
+		"lastName": "Hopper",
+		"email": "grace.hopper@example.com",
+		"favoriteColor": "Navy",
+		"birthday": "1906-12-09"
+	},
+	{
+		"firstName": "Katherine",
+		"lastName": "Johnson",
+		"email": "katherine.johnson@example.com",
+		"favoriteColor": "Green",
+		"birthday": "1918-08-26"
+	}
+]
+
+
+
+### [/contacts/{{contactId}}] - Replace one contact
+PUT {{baseUrl}}/contacts/{{contactId}}
+Content-Type: application/json
+
+{
+	"firstName": "Ada",
+	"lastName": "Byron",
+	"email": "ada.byron@example.com",
+	"favoriteColor": "Teal",
+	"birthday": "1815-12-10"
+}
+
+
+
+### [/contacts] - Replace multiple contacts
+PUT {{baseUrl}}/contacts
+Content-Type: application/json
+[
+	{
+		"_id": "{{contactId}}",
+		"firstName": "Grace",
+		"lastName": "Murray Hopper",
+		"email": "grace.m.hopper@example.com",
+		"favoriteColor": "Blue",
+		"birthday": "1906-12-09"
+	},
+	{
+		"_id": "{{secondContactId}}",
+		"firstName": "Katherine",
+		"lastName": "Coleman Johnson",
+		"email": "katherine.c.johnson@example.com",
+		"favoriteColor": "Purple",
+		"birthday": "1918-08-26"
+	}
+]
+
+
+
+### [/contacts/{{contactId}}] - Update one contact field(s)
+PATCH {{baseUrl}}/contacts/{{contactId}}
+Content-Type: application/json
+{
+	"favoriteColor": "Crimson"
+}
+
+
+
+### [/contacts] - Update multiple contacts field(s)
+PATCH {{baseUrl}}/contacts
+
+Content-Type: application/json
+[
+	{
+		"_id": "{{contactId}}",
+		"favoriteColor": "Orange"
+	},
+	{
+		"_id": "{{secondContactId}}",
+		"email": "updated.katherine@example.com"
+	}
+]
+
+
+
+### [/contacts/{{contactId}}] - Delete one contact
+DELETE {{baseUrl}}/contacts/{{contactId}}
+
+
+
+### [/contacts] - Delete multiple contacts
+DELETE {{baseUrl}}/contacts
+Content-Type: application/json
+
+[
+	{
+		"_id": "{{contactId}}"
+	},
+	{
+		"_id": "{{secondContactId}}"
+	}
+]
