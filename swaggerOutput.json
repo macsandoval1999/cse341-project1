@@ -5,9 +5,9 @@
         "description": "API for CSE341 Project 1",
         "version": "1.0.0"
     },
-    "host": "localhost:3000",
+    "host": "https://cse341-project1-21wn.onrender.com",
     "basePath": "/",
-    "schemes": ["http", "https"],
+    "schemes": ["https"],
     "paths": {
         "/": {
             "get": {
