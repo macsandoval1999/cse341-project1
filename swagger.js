@@ -6,17 +6,17 @@ const swaggerAutogen = require('swagger-autogen')();
 // * 2. Define the documentation object (optional)
 const doc = {
     info: {
-        title: "CSE341 Project 1 API",
-        description: "API for CSE341 Project 1",
+        title: 'CSE341 Project 1 API',
+        description: 'API for CSE341 Project 1',
     },
-    host: "cse341-project1-21wn.onrender.com",
-    schemes: ["https"],
+    host: 'localhost:3000',
+    schemes: ['http', 'https']
 };
 
 
 
 // * 3. Specify the output file and the endpoints files
-const outputFile = './swagger.json';
+const outputFile = './swaggerOutput.json';
 const endpointsFiles = ['./routes/index.js'];
 
 
