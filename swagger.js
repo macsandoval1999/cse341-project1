@@ -6,17 +6,17 @@ const swaggerAutogen = require('swagger-autogen')();
 // * 2. Define the documentation object (optional)
 const doc = {
     info: {
-        title: 'CSE341 Project 1 API',
-        description: 'API for CSE341 Project 1',
+        title: "CSE341 Project 1 API",
+        description: "API for CSE341 Project 1",
     },
-    host: 'localhost:3000',
-    schemes: ['http', 'https']
+    host: "cse341-project1-21wn.onrender.com",
+    schemes: ["https"],
 };
 
 
 
 // * 3. Specify the output file and the endpoints files
-const outputFile = './swaggerOutput.json';
+const outputFile = './swagger.json';
 const endpointsFiles = ['./routes/index.js'];
 
 
@@ -60,10 +60,10 @@ Heres a breakdown of the properties:
 
 
 ? 3. Specify the output file and the endpoints files
-** const outputFile = './swaggerOutput.json';
+** const outputFile = './swagger.json';
 ** const endpointsFiles = ['./routes/index.js'];
 __________________________________________________
-Here, we define the output file where the generated Swagger documentation will be saved (swaggerOutput.json) and the file(s) that contain our API endpoints (index.js in the routes directory). The swagger-autogen package will scan these files to extract information about the API endpoints and generate the documentation accordingly.
+Here, we define the output file where the generated Swagger documentation will be saved (swagger.json) and the file(s) that contain our API endpoints (index.js in the routes directory). The swagger-autogen package will scan these files to extract information about the API endpoints and generate the documentation accordingly.
 
 
 
