@@ -25,7 +25,7 @@ router.post(
 router.put("/:id", validation.saveContact, contactsController.replaceContact);
 
 // PUT__replace multiple contacts by IDs
-router.put("/", validation.saveContacts, contactsController.replaceContacts);
+router.put("/", validation.replaceContacts, contactsController.replaceContacts);
 
 // PATCH__update specific fields of a contact by ID
 router.patch(

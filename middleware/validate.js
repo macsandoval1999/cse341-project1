@@ -79,6 +79,19 @@ const saveContacts = (req, res, next) => {
     validateContactArray(req, res, next, validationRules);
 };
 
+const replaceContacts = (req, res, next) => {
+    const validationRules = {
+        _id: `required|${objectIdRule}`,
+        firstName: "required|string",
+        lastName: "required|string",
+        email: "required|email",
+        favoriteColor: "required|string",
+        birthday: "string",
+    };
+
+    validateContactArray(req, res, next, validationRules);
+};
+
 const updateContact = (req, res, next) => {
     const validationRules = {
         firstName: "string",
@@ -141,6 +154,7 @@ const deleteContacts = (req, res, next) => {
 module.exports = {
     saveContact,
     saveContacts,
+    replaceContacts,
     updateContact,
     updateContacts,
     deleteContacts,

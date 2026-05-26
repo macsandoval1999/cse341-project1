@@ -1,5 +1,21 @@
 # CSE341 Project 1 - PART 2
 
+## What we changed since the last push
+
+- Added `try/catch` blocks to every MongoDB call in the contacts controller so database failures now return clear `500` responses.
+- Added missing single-route ObjectId checks for `PUT /contacts/:id` and `PATCH /contacts/:id` so invalid IDs are rejected with `400` before MongoDB work runs.
+- Added clearer `404` responses when a contact does not exist for single-item reads, updates, replaces, and deletes.
+- Added a dedicated bulk replace validator so `PUT /contacts` requires each contact to include a valid MongoDB `_id`.
+- Adjusted the contacts controller bulk handlers so `swagger-autogen` once again generates array request body schemas instead of the broken `map((contact)` placeholder shape.
+
+## Notes for future error handling and validation
+
+- Validate request shape before the controller whenever you can. That keeps controller logic focused on database work.
+- Validate `req.params.id` before creating `new ObjectId(...)` any time a route uses `:id`.
+- Use `404` when the request is valid but the contact is missing, and reserve `500` for real server or database failures.
+- When bulk routes use arrays, test three cases every time: valid array, empty array, and array items with invalid `_id` values.
+- If Swagger starts generating odd request bodies again, check whether the controller is building request payloads through `.map(...)` or other dynamic shapes that autogen may not infer well.
+
 ## Error Handling
 
 ### Step 1: Change the swagger json for local testing
