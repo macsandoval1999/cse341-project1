@@ -9,8 +9,8 @@ const doc = {
         title: 'CSE341 Project 1 API',
         description: 'API for CSE341 Project 1',
     },
-    host: 'localhost:3000',
-    schemes: ['http', 'https']
+    host: 'cse340-web-activity.onrender.com',
+    schemes: ['https']
 };
 
 

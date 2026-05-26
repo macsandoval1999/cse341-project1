@@ -5,7 +5,7 @@
         "description": "API for CSE341 Project 1",
         "version": "1.0.0"
     },
-    "host": "cse341-project1-21wn.onrender.com",
+    "host": "cse340-web-activity.onrender.com",
     "basePath": "/",
     "schemes": ["https"],
     "paths": {
@@ -16,6 +16,16 @@
                 "responses": {
                     "200": {
                         "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api-docs": {
+            "get": {
+                "description": "",
+                "responses": {
+                    "default": {
+                        "description": ""
                     }
                 }
             }
