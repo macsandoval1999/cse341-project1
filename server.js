@@ -1,54 +1,67 @@
 // * 1. Imports
-const express = require('express');
-const dotenv = require('dotenv');
-const bodyParser = require('body-parser');
-const routes = require('./routes');
-const mongodb = require('./data/database.js');
-
-
+const express = require("express");
+const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
+const routes = require("./routes");
+const mongodb = require("./data/connect.js");
 
 // * 2. Load environment variables & Initialize Express App
 dotenv.config();
 const port = process.env.PORT || 3000;
 const app = express();
 
-
-
 // * 3. Middleware
 app.use(bodyParser.json());
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+        res.status(400).json({ error: "Invalid JSON body" });
+        return;
+    }
+
+    next(err);
+});
+
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept, Z-Key'
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Z-Key"
     );
     res.setHeader(
-        'Access-Control-Allow-Methods',
-        'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     );
     next();
 });
 
-
 // * 4. Routes
-app.use('/', routes);
+app.use("/", routes);
 
+app.use((err, req, res, next) => {
+    console.error("Unhandled request error:", err);
+    res.status(500).json({ error: "An unexpected server error occurred" });
+});
 
+// * 5. Global error handling for uncaught exceptions
+process.on("uncaughtException", (err) => {
+    console.error("Caught exception:", err);
+});
 
-// * 5. Start the server after initializing the database
+process.on("unhandledRejection", (reason) => {
+    console.error("Unhandled promise rejection:", reason);
+});
+
+// * 6. Start the server after initializing the database
 mongodb.database.initDB((err) => {
     if (err) {
-        console.error('Failed to initialize database:', err);
+        console.error("Failed to initialize database:", err);
         process.exit(1);
-    }
-    else {
+    } else {
         app.listen(port, () => {
             console.log(`Server is running on port http://localhost:${port}`);
         });
     }
 });
-
-
 
 /*
 ? 1. Imports

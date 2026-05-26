@@ -1,7 +1,7 @@
 ### Variables for testing
 @baseUrl = http://localhost:3000
-@contactId = 6a0e8f8a8a8ec295a6e95ecb
-@secondContactId = 64f1234567890abc12345679
+@contactId = 6a152cc410691af949485afa
+@secondContactId = 6a152cc410691af949485af9
 
 
 
@@ -74,6 +74,7 @@ Content-Type: application/json
 ### [/contacts] - Replace multiple contacts
 PUT {{baseUrl}}/contacts
 Content-Type: application/json
+
 [
 	{
 		"_id": "{{contactId}}",
@@ -98,6 +99,7 @@ Content-Type: application/json
 ### [/contacts/{{contactId}}] - Update one contact field(s)
 PATCH {{baseUrl}}/contacts/{{contactId}}
 Content-Type: application/json
+
 {
 	"favoriteColor": "Crimson"
 }
@@ -106,8 +108,8 @@ Content-Type: application/json
 
 ### [/contacts] - Update multiple contacts field(s)
 PATCH {{baseUrl}}/contacts
-
 Content-Type: application/json
+
 [
 	{
 		"_id": "{{contactId}}",

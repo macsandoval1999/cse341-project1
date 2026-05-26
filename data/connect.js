@@ -1,47 +1,42 @@
 // 1. Imports
-const MongoClient = require('mongodb').MongoClient;
-
-
+const MongoClient = require("mongodb").MongoClient;
 
 // 2. Initialize Database Object
 const database = {};
 
-
-
 // 3. Variable to hold the database client instance
 let dbClient;
-
-
 
 // 4. Object Methods
 database.initDB = (callback) => {
     if (dbClient) {
-        console.log('Database is already initialized!');
+        console.log("Database is already initialized!");
         return callback(null, dbClient);
     }
+    if (!process.env.MONGODB_URI) {
+        return callback(
+            new Error("MONGODB_URI is not defined in the environment.")
+        );
+    }
     MongoClient.connect(process.env.MONGODB_URI)
-        .then(client => {
+        .then((client) => {
             dbClient = client;
             callback(null, dbClient);
         })
-        .catch(err => {
+        .catch((err) => {
             callback(err);
         });
 };
 
 database.getDB = () => {
     if (!dbClient) {
-        throw new Error('Database not initialized!');
+        throw new Error("Database not initialized!");
     }
     return dbClient;
 };
 
-
-
 // 5. Export the database object
 module.exports = { database };
-
-
 
 /*
 1. Imports

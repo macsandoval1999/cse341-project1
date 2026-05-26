@@ -1,47 +1,54 @@
 // * 1. Imports
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const contactsController = require('../controllers/contactsController.js');
-
-
+const contactsController = require("../controllers/contactsController.js");
+const validation = require("../middleware/validate.js");
 
 // * 2. Routes
 // GET__all contacts
-router.get('/', contactsController.getAll);
+router.get("/", contactsController.getContacts);
 
 // GET__single contact by ID
-router.get('/:id', contactsController.getSingle);
+router.get("/:id", contactsController.getContact);
 
 // POST__create new contact
-router.post('/', contactsController.createSingle);
+router.post("/", validation.saveContact, contactsController.createContact);
 
 // POST__create multiple new contacts
-router.post('/bulk', contactsController.createMultiple);
+router.post(
+    "/bulk",
+    validation.saveContacts,
+    contactsController.createContacts
+);
 
 // PUT__replace an entire contact by ID
-router.put('/:id', contactsController.replaceSingle);
+router.put("/:id", validation.saveContact, contactsController.replaceContact);
 
 // PUT__replace multiple contacts by IDs
-router.put('/', contactsController.replaceMultiple);
+router.put("/", validation.saveContacts, contactsController.replaceContacts);
 
 // PATCH__update specific fields of a contact by ID
-router.patch('/:id', contactsController.updateSingle);
+router.patch(
+    "/:id",
+    validation.updateContact,
+    contactsController.updateContact
+);
 
 // PATCH__update specific fields of multiple contacts by IDs
-router.patch('/', contactsController.updateMultiple);
+router.patch("/", validation.updateContacts, contactsController.updateContacts);
 
 // DELETE__delete contact by ID
-router.delete('/:id', contactsController.deleteSingle);
+router.delete("/:id", contactsController.deleteContact);
 
 // DELETE__multiple contacts by IDs
-router.delete('/', contactsController.deleteMultiple);
-
-
+router.delete(
+    "/",
+    validation.deleteContacts,
+    contactsController.deleteContacts
+);
 
 // * 3. Export the router
 module.exports = router;
-
-
 
 /*
 ? 1. Imports

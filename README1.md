@@ -1,4 +1,4 @@
-# cse341-project1
+# cse341-project1 PART 1
 
 CSE341 Project 1 for Weeks 1 and 2. This project is a small Express API connected to MongoDB Atlas. It exposes two contact endpoints:
 
