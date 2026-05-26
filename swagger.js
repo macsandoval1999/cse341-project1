@@ -1,37 +1,29 @@
 // * 1. Import the swagger-autogen module
-const swaggerAutogen = require('swagger-autogen')();
-
-
+const swaggerAutogen = require("swagger-autogen")();
 
 // * 2. Define the documentation object (optional)
 const doc = {
     info: {
-        title: 'CSE341 Project 1 API',
-        description: 'API for CSE341 Project 1',
+        title: "CSE341 Project 1 API",
+        description: "API for CSE341 Project 1",
     },
-    host: 'cse340-web-activity.onrender.com',
-    schemes: ['https']
+    host: "cse340-web-activity.onrender.com",
+    schemes: ["https"],
 };
 
-
-
 // * 3. Specify the output file and the endpoints files
-const outputFile = './swaggerOutput.json';
-const endpointsFiles = ['./routes/index.js'];
-
-
+const outputFile = "./swaggerOutput.json";
+const endpointsFiles = ["./routes/index.js"];
 
 // * 4a. Generate the swagger documentation
 swaggerAutogen(outputFile, endpointsFiles, doc)
     .then(() => {
-        console.log('Swagger documentation generated successfully.');
+        console.log("Swagger documentation generated successfully.");
     })
     .catch((error) => {
-        console.error('Failed to generate swagger documentation:', error);
+        console.error("Failed to generate swagger documentation:", error);
         process.exit(1);
     });
-
-
 
 /*
 ? 1. Import the swagger-autogen module

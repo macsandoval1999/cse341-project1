@@ -5,36 +5,25 @@ const ObjectId = require("mongodb").ObjectId;
 // * 2. Initialize Controller Object
 const contactsController = {};
 
-const getContactsCollection = () => {
-    return mongodb.database.getDB().db().collection("contacts");
-};
-
-const sendServerError = (res, error, message) => {
-    console.error(message, error);
-    res.status(500).json({ error: message });
-};
-
-const buildContactFromBody = (body) => {
-    return {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        email: body.email,
-        favoriteColor: body.favoriteColor,
-        birthday: body.birthday,
-    };
-};
-
 // * 3. Controller Functions
 // GET__all contacts
 contactsController.getContacts = async (req, res) => {
     //#swagger.tags = ['Contacts']
-    try {
-        const contacts = await getContactsCollection().find().toArray();
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).json(contacts);
-    } catch (error) {
-        sendServerError(res, error, "Failed to retrieve contacts");
-    }
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .find();
+    response
+        .toArray((err, lists) => {
+            if (err) {
+                res.status(500).json(err);
+            }
+        })
+        .then((contacts) => {
+            res.setHeader("Content-Type", "application/json");
+            res.status(200).json(contacts);
+        });
 };
 
 // GET__single contact by ID
@@ -44,162 +33,169 @@ contactsController.getContact = async (req, res) => {
         res.status(400).json({ error: "Invalid contact ID format" });
         return;
     }
-    try {
-        const contactId = new ObjectId(req.params.id);
-        const contact = await getContactsCollection().findOne({
-            _id: contactId,
+    const contactId = new ObjectId(req.params.id);
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .find({ _id: contactId });
+    response
+        .toArray((err, lists) => {
+            if (err) {
+                res.status(400).json(err);
+            }
+        })
+        .then((contacts) => {
+            res.setHeader("Content-Type", "application/json");
+            res.status(200).json(contacts[0]);
         });
-
-        if (!contact) {
-            res.status(404).json({ error: "Contact not found" });
-            return;
-        }
-
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).json(contact);
-    } catch (error) {
-        sendServerError(res, error, "Failed to retrieve contact");
-    }
 };
 
 // POST__create new contact
 contactsController.createContact = async (req, res) => {
     //#swagger.tags = ['Contacts']
-    try {
-        const response = await getContactsCollection().insertOne(
-            buildContactFromBody(req.body)
-        );
+    const newContact = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        favoriteColor: req.body.favoriteColor,
+        birthday: req.body.birthday,
+    };
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .insertOne(newContact);
 
-        if (response.acknowledged) {
-            res.status(201).json({ message: "Contact created successfully" });
-        } else {
-            res.status(500).json({ error: "Failed to create new contact" });
-        }
-    } catch (error) {
-        sendServerError(res, error, "Failed to create new contact");
+    if (response.acknowledged > 0) {
+        res.status(201).json({ message: "Contact created successfully" });
+    } else {
+        res.status(500).json(response.error || "Failed to create new contact");
     }
 };
 
 // POST__create multiple new contacts
 contactsController.createContacts = async (req, res) => {
     //#swagger.tags = ['Contacts']
-    try {
-        const newContacts = req.body.map((contact) =>
-            buildContactFromBody(contact)
-        );
-        const response = await getContactsCollection().insertMany(newContacts);
-
-        if (response.acknowledged) {
-            res.status(201).json({
-                message: `${response.insertedCount} contacts created successfully`,
-            });
-        } else {
-            res.status(500).json({ error: "Failed to create new contacts" });
-        }
-    } catch (error) {
-        sendServerError(res, error, "Failed to create new contacts");
+    const newContacts = req.body.map((contact) => {
+        return {
+            firstName: contact.firstName,
+            lastName: contact.lastName,
+            email: contact.email,
+            favoriteColor: contact.favoriteColor,
+            birthday: contact.birthday,
+        };
+    });
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .insertMany(newContacts);
+    if (response.acknowledged > 0) {
+        res.status(201).json({
+            message: `${response.insertedCount} contacts created successfully`,
+        });
+    } else {
+        res.status(500).json(response.error || "Failed to create new contacts");
     }
 };
 
 // PUT__replace an entire contact by ID
 contactsController.replaceContact = async (req, res) => {
     //#swagger.tags = ['Contacts']
-    if (!ObjectId.isValid(req.params.id)) {
-        res.status(400).json({ error: "Invalid contact ID format" });
-        return;
-    }
+    const newContactID = new ObjectId(req.params.id);
+    const newContact = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        favoriteColor: req.body.favoriteColor,
+        birthday: req.body.birthday,
+    };
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .replaceOne({ _id: newContactID }, newContact);
 
-    try {
-        const newContactID = new ObjectId(req.params.id);
-        const response = await getContactsCollection().replaceOne(
-            { _id: newContactID },
-            buildContactFromBody(req.body)
+    if (response.modifiedCount > 0) {
+        res.status(201).send({ message: "Contact replaced successfully" });
+    } else {
+        res.status(500).json(
+            response.error || "Failed to replace existing contact"
         );
-
-        if (response.matchedCount === 0) {
-            res.status(404).json({ error: "Contact not found" });
-        } else {
-            res.status(200).send({ message: "Contact replaced successfully" });
-        }
-    } catch (error) {
-        sendServerError(res, error, "Failed to replace existing contact");
     }
 };
 
 // PUT__replace multiple contacts by IDs
 contactsController.replaceContacts = async (req, res) => {
     //#swagger.tags = ['Contacts']
-    try {
-        const bulkOperations = req.body.map((contact) => {
-            return {
-                replaceOne: {
-                    filter: { _id: new ObjectId(contact._id) },
-                    replacement: buildContactFromBody(contact),
+    const bulkOperations = req.body.map((contact) => {
+        return {
+            replaceOne: {
+                filter: { _id: new ObjectId(contact._id) },
+                replacement: {
+                    firstName: contact.firstName,
+                    lastName: contact.lastName,
+                    email: contact.email,
+                    favoriteColor: contact.favoriteColor,
+                    birthday: contact.birthday,
                 },
-            };
-        });
-        const response =
-            await getContactsCollection().bulkWrite(bulkOperations);
-
-        if (response.matchedCount === 0) {
-            res.status(404).json({ error: "No matching contacts found" });
-        } else {
-            res.status(200).send({ message: "Contacts replaced successfully" });
-        }
-    } catch (error) {
-        sendServerError(res, error, "Failed to replace existing contacts");
+            },
+        };
+    });
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .bulkWrite(bulkOperations);
+    if (response.modifiedCount > 0) {
+        res.status(201).send({ message: "Contacts replaced successfully" });
+    } else {
+        res.status(500).json(
+            response.error || "Failed to replace existing contacts"
+        );
     }
 };
 
 // PATCH__update specific fields of a contact by ID
 contactsController.updateContact = async (req, res) => {
     //#swagger.tags = ['Contacts']
-    if (!ObjectId.isValid(req.params.id)) {
-        res.status(400).json({ error: "Invalid contact ID format" });
-        return;
-    }
-
-    try {
-        const newContactID = new ObjectId(req.params.id);
-        const updatedFields = req.body;
-        const response = await getContactsCollection().updateOne(
-            { _id: newContactID },
-            { $set: updatedFields }
-        );
-
-        if (response.matchedCount === 0) {
-            res.status(404).json({ error: "Contact not found" });
-        } else {
-            res.status(200).send({ message: "Contact updated successfully" });
-        }
-    } catch (error) {
-        sendServerError(res, error, "Failed to update contact");
+    const newContactID = new ObjectId(req.params.id);
+    const updatedFields = req.body;
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .updateOne({ _id: newContactID }, { $set: updatedFields });
+    if (response.modifiedCount > 0) {
+        res.status(201).send({ message: "Contact updated successfully" });
+    } else {
+        res.status(500).json(response.error || "Failed to update contact");
     }
 };
 
 // PATCH__update specific fields of multiple contacts by IDs
 contactsController.updateContacts = async (req, res) => {
     //#swagger.tags = ['Contacts']
-    try {
-        const bulkOperations = req.body.map((contact) => {
-            const { _id, ...fieldsToUpdate } = contact;
-            return {
-                updateOne: {
-                    filter: { _id: new ObjectId(_id) },
-                    update: { $set: fieldsToUpdate },
-                },
-            };
-        });
-        const response =
-            await getContactsCollection().bulkWrite(bulkOperations);
-
-        if (response.matchedCount === 0) {
-            res.status(404).json({ error: "No matching contacts found" });
-        } else {
-            res.status(200).send({ message: "Contacts updated successfully" });
-        }
-    } catch (error) {
-        sendServerError(res, error, "Failed to update contacts");
+    const bulkOperations = req.body.map((contact) => {
+        // Exclude _id from the update fields
+        const { _id, ...fieldsToUpdate } = contact;
+        return {
+            updateOne: {
+                filter: { _id: new ObjectId(_id) },
+                update: { $set: fieldsToUpdate },
+            },
+        };
+    });
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .bulkWrite(bulkOperations);
+    if (response.modifiedCount > 0) {
+        res.status(201).send({ message: "Contacts updated successfully" });
+    } else {
+        res.status(500).json(response.error || "Failed to update contacts");
     }
 };
 
@@ -210,38 +206,33 @@ contactsController.deleteContact = async (req, res) => {
         res.status(400).json({ error: "Invalid contact ID format" });
         return;
     }
-    try {
-        const newContactID = new ObjectId(req.params.id);
-        const response = await getContactsCollection().deleteOne({
-            _id: newContactID,
-        });
+    const newContactID = new ObjectId(req.params.id);
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .deleteOne({ _id: newContactID });
 
-        if (response.deletedCount > 0) {
-            res.status(200).send({ message: "Contact deleted successfully" });
-        } else {
-            res.status(404).json({ error: "Contact not found" });
-        }
-    } catch (error) {
-        sendServerError(res, error, "Failed to delete contact");
+    if (response.deletedCount > 0) {
+        res.status(201).send({ message: "Contact deleted successfully" });
+    } else {
+        res.status(500).json(response.error || "Failed to delete contact");
     }
 };
 
 // DELETE__multiple contacts by IDs
 contactsController.deleteContacts = async (req, res) => {
     //#swagger.tags = ['Contacts']
-    try {
-        const contactIDs = req.body.map((contact) => new ObjectId(contact._id));
-        const response = await getContactsCollection().deleteMany({
-            _id: { $in: contactIDs },
-        });
-
-        if (response.deletedCount > 0) {
-            res.status(200).send({ message: "Contacts deleted successfully" });
-        } else {
-            res.status(404).json({ error: "No matching contacts found" });
-        }
-    } catch (error) {
-        sendServerError(res, error, "Failed to delete contacts");
+    const contactIDs = req.body.map((contact) => new ObjectId(contact._id));
+    const response = await mongodb.database
+        .getDB()
+        .db()
+        .collection("contacts")
+        .deleteMany({ _id: { $in: contactIDs } });
+    if (response.deletedCount > 0) {
+        res.status(201).send({ message: "Contacts deleted successfully" });
+    } else {
+        res.status(500).json(response.error || "Failed to delete contacts");
     }
 };
 

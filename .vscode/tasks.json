@@ -1,0 +1,45 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Generate Swagger Docs",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"swagger.js"
+			],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Generate Swagger Docs",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"swagger.js"
+			],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Generate Swagger Docs",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"swagger.js"
+			],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Generate Swagger Docs",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"swagger.js"
+			],
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}
